@@ -11,7 +11,6 @@ let snake, food, score, d, game, enemies;
 let isGameOver = true;
 let highScore = localStorage.getItem('snakeHighScore') || 0;
 
-// --- AUDIO SYSTEM ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let bgmInterval;
 
@@ -47,7 +46,6 @@ const sounds = {
     spawn: () => playTone(400, 'square', 0.3)
 };
 
-// --- GAME LOGIC ---
 highscoreEl.innerText = highScore;
 
 function toggleUI(show, text) {
@@ -79,20 +77,13 @@ function spawnFood() {
 
 function drawMouse(x, y) {
     ctx.fillStyle = "#8e8e8e";
-    ctx.beginPath();
-    ctx.ellipse(x + 10, y + 12, 7, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x + 5, y + 7, 3, 0, Math.PI * 2);
-    ctx.arc(x + 15, y + 7, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#ffafaf";
-    ctx.beginPath();
-    ctx.moveTo(x + 10, y + 17);
-    ctx.quadraticCurveTo(x + 15, y + 19, x + 18, y + 15);
-    ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x + 10, y + 12, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 5, y + 7, 3, 0, Math.PI * 2); ctx.arc(x + 15, y + 7, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#ffafaf"; ctx.beginPath(); ctx.moveTo(x + 10, y + 17);
+    ctx.quadraticCurveTo(x + 15, y + 19, x + 18, y + 15); ctx.stroke();
 }
 
+// Key Controls
 document.addEventListener('keydown', e => {
     if (isGameOver && e.keyCode == 32) resetGame();
     let oldD = d;
@@ -103,6 +94,12 @@ document.addEventListener('keydown', e => {
     if (oldD !== d) sounds.move();
 });
 
+// Start game by clicking the "Ready?" screen
+uiLayer.addEventListener('click', () => {
+    if (isGameOver) resetGame();
+});
+
+// Swipe Controls
 let tX = 0, tY = 0;
 canvas.addEventListener('touchstart', e => { tX = e.touches[0].clientX; tY = e.touches[0].clientY; }, {passive: true});
 canvas.addEventListener('touchend', e => {
@@ -133,65 +130,32 @@ function draw() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     drawMouse(food.x, food.y);
-
     enemies.forEach(e => {
         ctx.fillStyle = "rgba(200, 230, 255, 0.7)";
-        ctx.beginPath();
-        ctx.arc(e.x + 10, e.y + 10, 9, Math.PI, 0);
-        ctx.lineTo(e.x + 19, e.y + 19);
-        ctx.lineTo(e.x + 1, e.y + 19);
-        ctx.fill();
-        ctx.fillStyle = "red";
-        ctx.fillRect(e.x + 5, e.y + 7, 3, 3);
-        ctx.fillRect(e.x + 12, e.y + 7, 3, 3);
+        ctx.beginPath(); ctx.arc(e.x + 10, e.y + 10, 9, Math.PI, 0); ctx.lineTo(e.x + 19, e.y + 19); ctx.lineTo(e.x + 1, e.y + 19); ctx.fill();
+        ctx.fillStyle = "red"; ctx.fillRect(e.x + 5, e.y + 7, 3, 3); ctx.fillRect(e.x + 12, e.y + 7, 3, 3);
     });
-
     snake.forEach((p, i) => {
         ctx.fillStyle = i === 0 ? '#00e676' : '#00a455';
-        ctx.beginPath();
-        ctx.roundRect(p.x + 1, p.y + 1, box - 2, box - 2, 6);
-        ctx.fill();
+        ctx.beginPath(); ctx.roundRect(p.x + 1, p.y + 1, box - 2, box - 2, 6); ctx.fill();
     });
-
     if (!d) return;
     if (Math.random() > 0.55) moveEnemies();
-
-    let sX = snake[0].x;
-    let sY = snake[0].y;
-    if (d == 'LEFT') sX -= box;
-    if (d == 'UP') sY -= box;
-    if (d == 'RIGHT') sX += box;
-    if (d == 'DOWN') sY += box;
-
+    let sX = snake[0].x; let sY = snake[0].y;
+    if (d == 'LEFT') sX -= box; if (d == 'UP') sY -= box;
+    if (d == 'RIGHT') sX += box; if (d == 'DOWN') sY += box;
     let hitE = enemies.some(e => e.x === sX && e.y === sY);
-    if (sX < 0 || sX >= canvas.width || sY < 0 || sY >= canvas.height || 
-        snake.some(p => p.x === sX && p.y === sY) || hitE) {
-        isGameOver = true;
-        clearInterval(game);
-        sounds.dead();
-        finalScoreEl.innerText = score;
-        toggleUI(true, hitE ? "復讐された！" : "Game Over");
-        return;
+    if (sX < 0 || sX >= canvas.width || sY < 0 || sY >= canvas.height || snake.some(p => p.x === sX && p.y === sY) || hitE) {
+        isGameOver = true; clearInterval(game); sounds.dead();
+        finalScoreEl.innerText = score; toggleUI(true, hitE ? "復讐された！" : "Game Over"); return;
     }
-
     if (sX == food.x && sY == food.y) {
-        score++;
-        sounds.eat();
-        scoreEl.innerText = score;
-        if (score > highScore) {
-            highScore = score;
-            localStorage.setItem('snakeHighScore', highScore);
-            highscoreEl.innerText = highScore;
-        }
-        if (score === 5 || (score > 5 && (score - 5) % 10 === 0 && enemies.length < 4)) {
-            enemies.push({ x: 0, y: 0 });
-            sounds.spawn();
-        }
+        score++; sounds.eat(); scoreEl.innerText = score;
+        if (score > highScore) { highScore = score; localStorage.setItem('snakeHighScore', highScore); highscoreEl.innerText = highScore; }
+        if (score === 5 || (score > 5 && (score - 5) % 10 === 0 && enemies.length < 4)) { enemies.push({ x: 0, y: 0 }); sounds.spawn(); }
         spawnFood();
-    } else {
-        snake.pop();
-    }
+    } else { snake.pop(); }
     snake.unshift({ x: sX, y: sY });
 }
 
-toggleUI(true, "準備はいい？");
+toggleUI(true, "Ready?");
