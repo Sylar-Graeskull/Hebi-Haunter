@@ -1,0 +1,91 @@
+:root {
+    --bg-color: #121212;
+    --panel-color: #1e1e1e;
+    --accent: #00e676;
+    --text-color: #ffffff;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+h1 {
+    margin: 0 0 15px 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 2.2rem;
+    text-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    width: 95vw;
+    max-width: 400px; /* Locks width to canvas size */
+    padding: 15px 20px;
+    background: var(--panel-color);
+    border-radius: 12px 12px 0 0;
+    font-weight: bold;
+    box-sizing: border-box;
+    border-bottom: 2px solid #333;
+}
+
+#game-container {
+    position: relative;
+    width: 95vw;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    background: #000;
+}
+
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    text-align: center;
+    z-index: 10;
+}
+
+#status-text {
+    font-size: 1.8rem;
+    margin: 0 0 10px 0;
+    color: var(--accent);
+}
+
+.hint {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-top: 15px;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 1.6rem; }
+    .stats { padding: 10px 15px; font-size: 0.85rem; }
+}
