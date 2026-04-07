@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haunted Snake Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <h1>Hebi Haunter</h1>
+
+    <div class="stats">
+        <div>SCORE: <span id="currentScore">0</span></div>
+        <div>HIGH: <span id="highScore">0</span></div>
+    </div>
+
+    <div id="game-container">
+        <canvas id="snakeGame" width="400" height="400"></canvas>
+        
+        <div id="ui-layer">
+            <h2 id="status-text">Ready</h2>
+            <p>Score: <span id="finalScore">0</span></p>
+            <p class="hint">Press SPACE or SWIPE to Start</p>
+        </div>
+    </div>
+
+    <script src="snake.js"></script>
+</body>
+</html>
