@@ -30,7 +30,7 @@ function playTone(freq, type, duration, volume = 0.1) {
 
 function startBGM() {
     if (bgmInterval) clearInterval(bgmInterval);
-    const notes = [110, 123.47, 130.81, 116.54]; // Haunting Bass Loop
+    const notes = [110, 123.47, 130.81, 116.54]; 
     let step = 0;
     bgmInterval = setInterval(() => {
         if (!isGameOver && d) {
@@ -43,14 +43,11 @@ function startBGM() {
 const sounds = {
     eat: () => playTone(800, 'sine', 0.1),
     move: () => playTone(150, 'triangle', 0.05),
-    dead: () => { 
-        playTone(200, 'sawtooth', 0.4); 
-        playTone(100, 'sawtooth', 0.6); 
-    },
+    dead: () => { playTone(200, 'sawtooth', 0.4); playTone(100, 'sawtooth', 0.6); },
     spawn: () => playTone(400, 'square', 0.3)
 };
 
-// --- GAME ENGINE ---
+// --- GAME LOGIC ---
 highscoreEl.innerText = highScore;
 
 function toggleUI(show, text) {
@@ -90,14 +87,12 @@ function drawMouse(x, y) {
     ctx.arc(x + 15, y + 7, 3, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = "#ffafaf";
-    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(x + 10, y + 17);
     ctx.quadraticCurveTo(x + 15, y + 19, x + 18, y + 15);
     ctx.stroke();
 }
 
-// Controls
 document.addEventListener('keydown', e => {
     if (isGameOver && e.keyCode == 32) resetGame();
     let oldD = d;
@@ -108,13 +103,8 @@ document.addEventListener('keydown', e => {
     if (oldD !== d) sounds.move();
 });
 
-// Touch/Swipe Logic
 let tX = 0, tY = 0;
-canvas.addEventListener('touchstart', e => { 
-    tX = e.touches[0].clientX; 
-    tY = e.touches[0].clientY; 
-}, { passive: true });
-
+canvas.addEventListener('touchstart', e => { tX = e.touches[0].clientX; tY = e.touches[0].clientY; }, {passive: true});
 canvas.addEventListener('touchend', e => {
     let dX = e.changedTouches[0].clientX - tX;
     let dY = e.changedTouches[0].clientY - tY;
@@ -127,7 +117,7 @@ canvas.addEventListener('touchend', e => {
     }
     if (isGameOver) resetGame();
     sounds.move();
-}, { passive: true });
+}, {passive: true});
 
 function moveEnemies() {
     enemies.forEach(enemy => {
@@ -142,10 +132,8 @@ function moveEnemies() {
 function draw() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     drawMouse(food.x, food.y);
 
-    // Draw Ghosts
     enemies.forEach(e => {
         ctx.fillStyle = "rgba(200, 230, 255, 0.7)";
         ctx.beginPath();
@@ -158,19 +146,11 @@ function draw() {
         ctx.fillRect(e.x + 12, e.y + 7, 3, 3);
     });
 
-    // Draw Snake
     snake.forEach((p, i) => {
         ctx.fillStyle = i === 0 ? '#00e676' : '#00a455';
         ctx.beginPath();
         ctx.roundRect(p.x + 1, p.y + 1, box - 2, box - 2, 6);
         ctx.fill();
-        if (i === 0) {
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.arc(p.x + 6, p.y + 6, 2, 0, Math.PI * 2);
-            ctx.arc(p.x + 14, p.y + 6, 2, 0, Math.PI * 2);
-            ctx.fill();
-        }
     });
 
     if (!d) return;
@@ -190,7 +170,7 @@ function draw() {
         clearInterval(game);
         sounds.dead();
         finalScoreEl.innerText = score;
-        toggleUI(true, hitE ? "復讐された！" : "ゲームオーバー");
+        toggleUI(true, hitE ? "復讐された！" : "Game Over");
         return;
     }
 
@@ -203,7 +183,6 @@ function draw() {
             localStorage.setItem('snakeHighScore', highScore);
             highscoreEl.innerText = highScore;
         }
-        // Ghost spawning logic
         if (score === 5 || (score > 5 && (score - 5) % 10 === 0 && enemies.length < 4)) {
             enemies.push({ x: 0, y: 0 });
             sounds.spawn();
